@@ -7,14 +7,15 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if user.save
+    if @user.save
+      remember @user
       flash[:success] = 'User created'
-      redirect_to user_path
+      redirect_to @user
     end
   end
 
   def show
-    @user.name
+    @user = User.find(params[:id])
   end
 
   private
