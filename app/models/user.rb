@@ -1,12 +1,14 @@
-class User < ApplicationRecord
-  #has_many :events, through :users_events
-  before_create :remember
+# frozen_string_literal: true
 
+class User < ApplicationRecord
+  # has_many :events, through :users_events
+  has_many :events, foreign_key: :creator
+  
+  
   attr_accessor :remember_token
 
   def self.digest(string)
-    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
-    BCrypt::Password.create(string, cost: cost)
+    Digest::SHA1.hexdigest(string)
   end
 
   def self.new_token
