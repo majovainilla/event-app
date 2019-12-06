@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  # has_many :events, through :users_events
+  has_many :attended_events, through: :attendance, source: :event_id
   has_many :events, foreign_key: :creator
+  has_many :attendances, foreign_key: :user_id
   validates :name, :email, presence: true
 
   attr_accessor :remember_token

@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_05_225005) do
+ActiveRecord::Schema.define(version: 2019_12_06_183504) do
+
+  create_table "attendances", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "event_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["event_id"], name: "index_attendances_on_event_id"
+    t.index ["user_id"], name: "index_attendances_on_user_id"
+  end
 
   create_table "events", force: :cascade do |t|
     t.string "name"
@@ -31,5 +40,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_225005) do
     t.string "remember_token"
   end
 
+  add_foreign_key "attendances", "events"
+  add_foreign_key "attendances", "users"
   add_foreign_key "events", "users", column: "creator_id"
 end
