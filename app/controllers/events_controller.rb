@@ -21,6 +21,15 @@ class EventsController < ApplicationController
 
   def index
     @events = Event.all
+    @upcoming_events = []
+    @previous_events = []
+    @events.each do |event|
+      if event.past?
+        @previous_events << event 
+      else
+        @upcoming_events << event
+      end
+    end
   end
 
   private

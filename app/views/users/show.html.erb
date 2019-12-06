@@ -5,6 +5,7 @@
 <div class="row">
   <aside class="col-md-4">
     <%= render '/shared/user'%>
+    <h2>Created Events:</h2>
     <ul class="card"> <% @user.events.each do |event| %>
       <li id='event-<%= event.id %>'>
         <article class="card-body">
@@ -20,4 +21,8 @@
     <%end%>
     </ul>
   </aside>
+
+  <%= render 'shared/upcoming'%>
+  <%= render 'shared/previous'%>
+  
 </div>
