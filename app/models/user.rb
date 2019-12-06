@@ -3,6 +3,7 @@
 class User < ApplicationRecord
   # has_many :events, through :users_events
   has_many :events, foreign_key: :creator
+  validates :name, :email, presence: true
 
   attr_accessor :remember_token
 

@@ -4,14 +4,7 @@
 
 <div class="row">
   <aside class="col-md-4">
-    <section class="user_info">
-    <div class="icon">
-      <i class="fas fa-user-circle"></i>
-    </div>
-      <h1>
-        <%= @user.name %>
-      </h1>
-    </section>
+    <%= render '/shared/user'%>
     <ul class="card"> <% @user.events.each do |event| %>
       <li id='event-<%= event.id %>'>
         <article class="card-body">
