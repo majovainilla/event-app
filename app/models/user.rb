@@ -3,8 +3,7 @@
 class User < ApplicationRecord
   # has_many :events, through :users_events
   has_many :events, foreign_key: :creator
-  
-  
+
   attr_accessor :remember_token
 
   def self.digest(string)

@@ -2,5 +2,5 @@
 
 class Event < ApplicationRecord
   # has_many :users, through :users_events
-  belongs_to :creator, class_name: :user
+  belongs_to :creator, class_name: 'User'
 end

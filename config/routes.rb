@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
+  get 'events/new'
+  get 'events/show'
+  get 'events/index'
   resources :users, only: %i[new create show]
+  resources :events
   #get 'users/new'
   #get 'users/create'
   #get 'users/show'
