@@ -1,0 +1,70 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ */
+
+@import "bootstrap";
+@import 'events.scss';
+@import 'form.scss';
+@import 'sessions.scss';
+@import 'users.scss';
+
+ /* Mixins */
+
+ @mixin menu-title {
+  color: white;
+  font-size: 1.4em;
+  list-style: none;
+  color: white;
+  text-decoration: none;
+ }
+
+ @mixin d-flex {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+ }
+
+
+ body {
+   width: 100%;
+   display: block;
+ }
+
+ header {
+  background-color: darkblue;
+  padding: 30px;
+ }
+
+ .navbar {
+  @include d-flex;
+ }
+
+ .logo {
+   a {
+    @include menu-title;
+    font-size: 1.5em;
+   }
+ }
+
+ .navbar-menu {
+   width: 50%;
+  ul {
+    @include d-flex
+  }
+  .logo, li {
+    @include menu-title;
+    a {
+      @include menu-title;
+    }
+  }
+ }
