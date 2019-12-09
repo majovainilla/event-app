@@ -1,12 +1,9 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 
-<h1>Profile</h1>
-
-<div class="row">
-  <aside class="col-md-4">
+  <aside class="col-12">
     <%= render '/shared/user'%>
     <h2>Created Events:</h2>
-    <ul class="card"> <% @user.events.each do |event| %>
+    <ul class="card m-auto"> <% @user.events.each do |event| %>
       <li id='event-<%= event.id %>'>
         <article class="card-body">
         <div class="card-title"><%= event.name %></div>
@@ -24,5 +21,3 @@
 
   <%= render 'shared/upcoming'%>
   <%= render 'shared/previous'%>
-  
-</div>

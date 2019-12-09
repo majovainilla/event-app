@@ -1,11 +1,9 @@
 Rails.application.routes.draw do
-  #get 'events/new'
-  #get 'events/show'
-  #get 'events/index'
+ 
+  root to: 'events#index'
   resources :users, only: %i[new create show]
   resources :events
-  #get 'users/new'
-  #get 'users/create'
-  #get 'users/show'
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  get '/login', to: 'sessions#new'
+  post '/login', to: 'sessions#create'
+  get '/logout', to: 'sessions#destroy'
 end

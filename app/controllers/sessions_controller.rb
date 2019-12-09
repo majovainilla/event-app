@@ -1,14 +1,15 @@
-class SessionsController < ApplicationController
+# frozen_string_literal: true
 
+class SessionsController < ApplicationController
   def new; end
 
   def create
-    @user = User.find_by(email: params[:session][:email])
-    if @user(params[:session])
-      log_in @user
-      redirect_to @user
+    user = User.find_by(name: params[:session][:name])
+    if user
+      log_in user
+      redirect_to user
     else
-      flash.now[:danger] = 'User doesn\'t exist'
+      flash.now[:danger] = 'Type a valid user'
       render 'new'
     end
   end

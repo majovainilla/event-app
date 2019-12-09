@@ -1,5 +1,6 @@
-<h2>Previous Events:</h2>
-  <ul class="card"> <% @previous_events.each do |event| %>
+<div class='event-card col-6'>  
+  <h2>Previous Events:</h2>
+  <ul class="card m-auto"> <% @previous_events.each do |event| %>
       <li id='event-<%= event.id %>'>
         <article class="card-body">
           <div class="card-title"><%= event.name %></div>
@@ -12,3 +13,4 @@
       </li>
     <%end%>
   </ul>
+</div>
