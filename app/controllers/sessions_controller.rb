@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
+
   def new; end
 
   def create
-    user = User.find_by(name: params[:session][:name])
-    if user
+    if (user = User.find_by(name: params[:session][:name]))
       log_in user
-      redirect_to user
+      redirect_to root_path
     else
-      flash.now[:danger] = 'Type a valid user'
+      flash.now[:danger] = 'Not a valid user'
       render 'new'
     end
   end

@@ -7,18 +7,13 @@ class User < ApplicationRecord
   validates :name, :email, presence: true
 
   attr_accessor :remember_token
-
-  def self.digest(string)
-    Digest::SHA1.hexdigest(string)
-  end
-
   def self.new_token
     SecureRandom.urlsafe_base64
   end
 
   def remember
     self.remember_token = User.new_token
-    update_attribute(:remember_token, User.digest(remember_token))
+    update_attribute(:remember_token, remember_token)
   end
 
   def upcoming_events
@@ -28,4 +23,5 @@ class User < ApplicationRecord
   def previous_events
     self.attended_events.where('events.date < ?', Time.now)
   end
+  
 end

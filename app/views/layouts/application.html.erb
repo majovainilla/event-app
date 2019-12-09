@@ -10,7 +10,10 @@
   </head>
 
     <%= render 'layouts/header'%>
-  <body class= 'container-fluid'>
+    <body class= 'container-fluid'>
+    <% flash.each do |name, message| %>
+      <div class="<%= name %>"><%= message %></div>
+    <% end %>
     <%= yield %>
   </body>
 </html>
