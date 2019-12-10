@@ -4,7 +4,7 @@ module SessionsHelper
   def log_in(user)
     user.remember
     session[:name] = user.name
-    #cookies.permanent[:remember_token] = user.remember_token
+    # cookies.permanent[:remember_token] = user.remember_token
     current_user
   end
 
@@ -15,15 +15,14 @@ module SessionsHelper
   def log_out
     forget(current_user)
     session.delete(:name)
-    #cookies.permanent[:remember_token] = nil
+    # cookies.permanent[:remember_token] = nil
     @current_user = nil
- 
   end
 
   def forget(user)
     user.forget_token
-    #cookies.delete(:user_id)
-    #cookies.delete(:remember_token)
+    # cookies.delete(:user_id)
+    # cookies.delete(:remember_token)
   end
 
   def current_user
