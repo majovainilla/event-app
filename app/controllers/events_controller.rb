@@ -30,7 +30,7 @@ class EventsController < ApplicationController
     @user = current_user
     @event = current_event
     attendance = @user.attended_events << @event
-    if attendance
+    if attendance do
       flash[:success] = 'Congratulations you are in the list'
       redirect_back fallback_location: @user
     end
