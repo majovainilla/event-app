@@ -10,12 +10,12 @@ class Event < ApplicationRecord
   scope :upcoming, -> { where('date > ?', Date.today).order(date: :asc) }
 
   # def self.previous_events
-    #@previous_events = Event.where('date < ?', Date.today).order(:date)
-   
+  # @previous_events = Event.where('date < ?', Date.today).order(:date)
+
   # end
 
   # def self.upcoming_events
-    #@upcoming_events = Event.where('date > ?', Date.today)}
-  
+  # @upcoming_events = Event.where('date > ?', Date.today)}
+
   # end
 end

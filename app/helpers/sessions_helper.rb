@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module SessionsHelper
-
   def log_in(user)
     user.remember
     cookies.permanent[:remember_token] = user.remember_token
@@ -18,7 +17,7 @@ module SessionsHelper
     @current_user = nil
   end
 
-  def forget(user)
+  def forget(_user)
     cookies.delete(:remember_token)
   end
 

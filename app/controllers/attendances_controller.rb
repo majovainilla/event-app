@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class AttendancesController < ApplicationController
- before_action :current_event
+  before_action :current_event
 
   def new
     @attendance = Attendance.new
@@ -15,6 +17,4 @@ class AttendancesController < ApplicationController
   end
 
   private
-
-
 end

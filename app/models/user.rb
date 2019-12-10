@@ -17,11 +17,10 @@ class User < ApplicationRecord
   end
 
   def upcoming_events
-    self.attended_events.where('events.date > ?', Time.now)
+    attended_events.where('events.date > ?', Time.now)
   end
 
   def previous_events
-    self.attended_events.where('events.date < ?', Time.now)
+    attended_events.where('events.date < ?', Time.now)
   end
-  
 end
