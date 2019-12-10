@@ -23,4 +23,8 @@ class User < ApplicationRecord
   def previous_events
     attended_events.where('events.date < ?', Time.now)
   end
+
+  def forget_token
+    update_attribute(:remember_token, nil)
+  end
 end
