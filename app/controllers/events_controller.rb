@@ -24,6 +24,16 @@ class EventsController < ApplicationController
     @upcoming_events = Event.upcoming
   end
 
+  def attend
+    @user = current_user
+    @event = current_event
+    attendance = @user.attended_events << @event
+    if attendance
+      flash[:success] = 'Congratulations you are in the list'
+      redirect_back fallback_location: @user
+    end
+  end
+
   private
 
   def event_params
