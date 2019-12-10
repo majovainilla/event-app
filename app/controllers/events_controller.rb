@@ -29,11 +29,9 @@ class EventsController < ApplicationController
   def attend
     @user = current_user
     @event = current_event
-    attendance = @user.attended_events << @event
-    if attendance
-      flash[:success] = 'Congratulations you are in the list'
-      redirect_back fallback_location: @user
-    end
+    @user.attended_events << @event
+    flash[:success] = 'Congratulations you are in the list'
+    redirect_back fallback_location: @user
   end
 
   private
