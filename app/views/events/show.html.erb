@@ -1,5 +1,8 @@
-<h1>Event Information</h1>
-<h2>Created by:</h2>
-<%= render '/shared/user' %>
-<h2>Attendance List</h2>
-<%= render '/shared/attendees' %>
+  <h1>Event Information</h1>
+  <h6 class = "text-center">Created by:</h6>
+  <%= render '/shared/user' %>
+  <button type="button" class="d-flex m-auto btn btn-primary "><%= link_to 'Attend Event', '#'%></button>
+  <div class = 'col-8 m-auto'>
+    <h2 class='text-center mt-5'>Attendance List</h2>
+    <%= render '/shared/attendees' %>
+  </div>

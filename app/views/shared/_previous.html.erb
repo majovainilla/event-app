@@ -1,16 +1,5 @@
-<div class='event-card col-6'>  
-  <h2>Previous Events:</h2>
-  <ul class="card m-auto"> <% @previous_events.each do |event| %>
-      <li id='event-<%= event.id %>'>
-        <article class="card-body">
-          <div class="card-title"><%= event.name %></div>
-          <div class="data-card">
-            <div class="timestamp">
-              Created <%= time_ago_in_words(event.created_at) %>  ago by: <%= event.creator.name%>
-            </div>
-          </div>
-        </article>
-      </li>
-    <%end%>
-  </ul>
+
+<div class='event-card m-auto'> 
+  <h2 class="events-card-title text-center"><%= 'Previous Events' %></h2>
+  <%= render '/shared/events', object: @previous_events %>
 </div>

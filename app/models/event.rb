@@ -6,8 +6,8 @@ class Event < ApplicationRecord
   has_many :attendees, through: :attendances, source: 'attendee'
 
   validates :name, :description, presence: true
-  scope :previous, -> {where('date < ?', Date.today).order(date: :desc)}
-  scope :upcoming, -> {where('date > ?', Date.today).order(date: :desc)}
+  scope :previous, -> { where('date < ?', Date.today).order(date: :asc) }
+  scope :upcoming, -> { where('date > ?', Date.today).order(date: :asc) }
 
   # def self.previous_events
     #@previous_events = Event.where('date < ?', Date.today).order(:date)

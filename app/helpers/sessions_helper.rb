@@ -8,10 +8,6 @@ module SessionsHelper
     current_user
   end
 
-  def current_user
-    @current_user ||= User.find_by(remember_token: cookies[:remember_token])
-  end
-
   def logged_in?
     !current_user.nil?
   end
@@ -25,5 +21,9 @@ module SessionsHelper
   def forget(user)
     user.forget
     cookies.delete(:remember_token)
+  end
+
+  def current_user
+    @current_user ||= User.find_by(remember_token: cookies[:remember_token])
   end
 end
