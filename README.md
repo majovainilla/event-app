@@ -2,7 +2,7 @@
 
 The website is similar to a private Eventbrite which allows users to create events and then manage user signups. Users can create events and send invitations and parties). Events take place at a specific date and at a location.
 
-You can see the live version of the app in here: https://fierce-waters-99113.herokuapp.com/
+You can see the live version of the app in here: https://powerful-plains-60448.herokuapp.com/
 
 This project includes knowledge of:
 
