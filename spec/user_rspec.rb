@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
     expect(user.valid?).to be(false)
   end
 
-  context 'Validations' do
+  context 'Associations' do
     it { should have_many(:events).with_foreign_key('creator') }
     it { should have_many(:attendances).with_foreign_key('attendee') }
     it { should have_many(:attended_events).through(:attendances).source(:attended_event) }
