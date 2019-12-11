@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class EventsController < ApplicationController
+  before_action :require_login, only: [:new, :attend]
+
   def new
     @event = Event.new
   end
@@ -19,6 +21,7 @@ class EventsController < ApplicationController
   def show
     @event = Event.find(params[:id])
     @user = @event.creator
+    @attendee = current_user
   end
 
   def index
@@ -29,9 +32,13 @@ class EventsController < ApplicationController
   def attend
     @user = current_user
     @event = current_event
-    @user.attended_events << @event
-    flash[:success] = 'Congratulations you are in the list'
-    redirect_back fallback_location: @user
+    if @user.attended_events << @event
+      flash[:success] = 'Congratulations you are in the list'
+      redirect_back fallback_location: @user
+    else
+      flash.now[:danger] = 'You are already attending this event'
+      render @event
+    end
   end
 
   private

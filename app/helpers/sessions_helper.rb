@@ -4,7 +4,6 @@ module SessionsHelper
   def log_in(user)
     user.remember
     session[:name] = user.name
-    # cookies.permanent[:remember_token] = user.remember_token
     current_user
   end
 
@@ -15,17 +14,19 @@ module SessionsHelper
   def log_out
     forget(current_user)
     session.delete(:name)
-    # cookies.permanent[:remember_token] = nil
     @current_user = nil
   end
 
   def forget(user)
     user.forget_token
-    # cookies.delete(:user_id)
-    # cookies.delete(:remember_token)
   end
 
   def current_user
     @current_user ||= User.find_by(name: session[:name])
+  end
+
+  def require_login
+    flash[:danger] = 'You need to be logged in'
+    redirect_to login_path unless logged_in?
   end
 end
