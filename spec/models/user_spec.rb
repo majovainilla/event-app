@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it 'validates name and email' do
+   it 'validates name and email' do
     user = User.new(name: '', email: '')
     expect(user.valid?).to be(false)
   end

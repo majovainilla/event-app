@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe 'Authentication process' do
-  scenario 'Authentication Feature', type: :feature do
+RSpec.feature "Authentications", type: :feature do
+  scenario 'Log in and log out' do
     user = User.create(name: "User Example", email: "email")
     visit login_path
     have_link 'Log In', href: login_path
