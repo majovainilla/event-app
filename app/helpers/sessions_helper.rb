@@ -26,9 +26,9 @@ module SessionsHelper
   end
 
   def require_login
-    unless logged_in?
-      flash[:danger] = 'You need to be logged in'
-      redirect_to login_path
-    end
+    return if logged_in?
+
+    flash[:danger] = 'You need to be logged in'
+    redirect_to login_path
   end
 end
