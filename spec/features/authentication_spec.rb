@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.feature "Authentications", type: :feature do
+RSpec.feature 'Authentications', type: :feature do
   scenario 'Log in and log out' do
-    user = User.create(name: "User Example", email: "email")
+    user = User.create(name: 'User Example', email: 'email')
     visit login_path
     have_link 'Log In', href: login_path
     have_link 'Events', href: events_path

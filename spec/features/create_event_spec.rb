@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-RSpec.feature "CreateEvents", type: :feature do
+RSpec.feature 'CreateEvents', type: :feature do
   before :each do
-    user = User.create(name: "User Example", email: "email")
+    user = User.create(name: 'User Example', email: 'email')
     event = user.events.build(name: 'Event testing', description: 'Event description', date: '05/05/2020', location: 'Home')
     event.save
     visit login_path

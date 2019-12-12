@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EventsController < ApplicationController
-  before_action :require_login, only: [:new, :attend]
+  before_action :require_login, only: %i[new attend]
 
   def new
     @event = Event.new
