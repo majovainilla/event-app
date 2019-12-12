@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe 'Events process' do
   before :each do
     user = User.create(name: "User Example", email: "email")
+    event = user.events.build(name: 'Event testing', description: 'Event description', date: '05/05/2020', location: 'Home')
+    event.save
     visit login_path
     page.fill_in 'session_name', with: 'User Example'
     click_button 'Log In'
@@ -16,12 +18,17 @@ RSpec.describe 'Events process' do
     page.fill_in 'event_location', with: 'Event location'
     click_button 'Create my event'
     expect(page).to have_text 'Event successfully created'
-    expect(page).to have_text 'Event Information'
   end
 
   scenario 'Attend the event', type: :feature do
-    first('.card-title > a').click
-    #find(".card-title > a", match: :first).click
+    click_link('Event testing')
+    expect(page.current_path).to eq '/events/1'
+    expect(page).to have_text 'Event Information'
+    click_button('Attend Event')
+    find('div', class: 'navbar-menu')
+    expect(page).to have_text 'Event Information'
+    # expect(page).to have_flash :success, text: 'Congratulations you are in the list'
+    expect(page).to have_text 'Congratulations you are in the list'
+    # expect(page).not_to have_button('Attend Event')
   end
-
 end
