@@ -7,7 +7,7 @@
     </div>
     <div class="formcontainer">
       <%= form_for(:session, url: login_path) do |f|%>
-        <label for="uname"><strong>Username</strong></label>
+        <label for="name"><strong>Username</strong></label>
         <%= f.text_field :name, :class => 'text' %>
         <%= f.submit 'Log In', :class => 'button' %>
       <% end %>

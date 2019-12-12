@@ -4,7 +4,7 @@
   <section class="col-12">
     <%= render '/shared/user'%>
     <h2 class="text-center"><%= 'Created Events' %></h2>
-    <%= render '/shared/events', object: @user.events %>
+    <%= render '/events/events', object: @user.events %>
   </section>
   <section> 
     <%= render 'shared/upcoming'%> </section>
