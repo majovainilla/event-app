@@ -1,0 +1,11 @@
+<h1>Event Information</h1>
+<h6 class="text-center">Created by:</h6>
+<%= render '/shared/user' %>
+<% if @event.attendees.include?(@attendee) %>
+<% else %>
+  <button type="button" class="d-flex m-auto btn btn-primary "><%= link_to 'Attend Event', current_event, method: :post%></button>
+<% end %>
+<div class='col-8 m-auto'>
+  <h2 class='text-center mt-5'>Attendance List</h2>
+  <%= render '/shared/attendees' %>
+</div>

@@ -1,0 +1,19 @@
+
+<div class="col-6 m-auto">
+  <h1> Create an Event</h1>
+
+  <div class="formcontainer">
+    <%= form_for @event do |f|%>
+    <%= render 'shared/errors', object: f.object %>
+    <label for="name"><strong>Event Title</strong></label>
+    <%= f.text_field :name, class: 'text' %>
+    <label for="description"><strong>Event Description</strong></label>
+    <%= f.text_area :description, class: 'text' %>
+    <label for="date"><strong>Date</strong></label>
+    <%= f.date_field :date, class: 'text' %>
+    <label for="location"><strong>Location</strong></label>
+    <%= f.text_area :location, class: 'text' %>
+    <%= f.submit 'Create my event', class: 'button' %>
+    <% end %>
+  </div>
+</div>

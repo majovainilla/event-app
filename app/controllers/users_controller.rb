@@ -7,14 +7,20 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if user.save
+    if @user.save
+      @user.remember
+      log_in @user
       flash[:success] = 'User created'
-      redirect_to user_path
+      redirect_to @user
+    else
+      render 'new'
     end
   end
 
   def show
-    @user.name
+    @user = User.find(params[:id])
+    @upcoming_events = @user.upcoming_events
+    @previous_events = @user.previous_events
   end
 
   private

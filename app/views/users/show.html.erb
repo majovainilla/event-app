@@ -1,2 +1,13 @@
-<h1>Users#show</h1>
-<p>Find me in app/views/users/show.html.erb</p>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
+
+
+  <section class="col-12">
+    <%= render '/shared/user'%>
+    <h2 class="text-center"><%= 'Created Events' %></h2>
+    <%= render '/events/events', object: @user.events %>
+  </section>
+  <section> 
+    <%= render 'shared/upcoming'%> </section>
+  <section> 
+    <%= render 'shared/previous'%> 
+  </section>

@@ -1,0 +1,15 @@
+<ul class="card m-auto col-8 text-center list-group"> <% object.each do |event| %>
+      <li class = "list-group-item" id='event-<%= event.id %>'>
+        <article class="card-body">
+          <div class="card-title"><%= link_to event.name, event, class: 'event-link' %></div>
+          <div class="data-card">
+            <div class='date'> <%= event.date %> </div>
+            <div class='location'> <%= event.location %> </div>
+            <div class="timestamp">
+              Created <%= time_ago_in_words(event.created_at) %>  ago by: <%= event.creator.name%>
+            </div>
+          </div>
+        </article>
+      </li>
+    <%end%>
+  </ul>
