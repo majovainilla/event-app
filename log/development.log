@@ -1,0 +1,579 @@
+  [1m[35m (1.0ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (11.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[35m (10.5ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateUsers (20191205183812)
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCREATE TABLE "users" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "email" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mprimary::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20191205183812"]]
+  [1m[35m (5.0ms)[0m  [1m[36mcommit transaction[0m
+Migrating to AddRememberTokenToUsers (20191205210129)
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  [1m[35mALTER TABLE "users" ADD "remember_token" varchar[0m
+  [1m[36mprimary::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20191205210129"]]
+  [1m[35m (2.8ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateEvents (20191205223656)
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE TABLE "events" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" varchar, "description" text, "date" datetime, "location" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mprimary::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20191205223656"]]
+  [1m[35m (3.9ms)[0m  [1m[36mcommit transaction[0m
+Migrating to AddCreatorColumnToEvents (20191205225005)
+  [1m[35m (0.0ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.2ms)[0m  [1m[35mALTER TABLE "events" ADD "creator_id" integer[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE  INDEX "index_events_on_creator_id" ON "events" ("creator_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.1ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aevents" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "description" text DEFAULT NULL, "date" datetime DEFAULT NULL, "location" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "creator_id" integer DEFAULT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE  INDEX "tindex_aevents_on_creator_id" ON "aevents" ("creator_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "aevents" ("id","name","description","date","location","created_at","updated_at","creator_id")
+                     SELECT "id","name","description","date","location","created_at","updated_at","creator_id" FROM "events"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "events"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "events" ("id" integer NOT NULL PRIMARY KEY, "name" varchar DEFAULT NULL, "description" text DEFAULT NULL, "date" datetime DEFAULT NULL, "location" varchar DEFAULT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "creator_id" integer DEFAULT NULL, CONSTRAINT "fk_rails_15c34a9137"
+FOREIGN KEY ("creator_id")
+  REFERENCES "users" ("id")
+)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE  INDEX "index_events_on_creator_id" ON "events" ("creator_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[32mINSERT INTO "events" ("id","name","description","date","location","created_at","updated_at","creator_id")
+                     SELECT "id","name","description","date","location","created_at","updated_at","creator_id" FROM "aevents"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "aevents"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[36mprimary::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20191205225005"]]
+  [1m[35m (4.5ms)[0m  [1m[36mcommit transaction[0m
+Migrating to CreateAttendances (20191206183504)
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCREATE TABLE "attendances" ("attendee_id" integer, "attended_event_id" integer, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_a07acd73a1"
+FOREIGN KEY ("attendee_id")
+  REFERENCES "users" ("id")
+, CONSTRAINT "fk_rails_f4f2318f10"
+FOREIGN KEY ("attended_event_id")
+  REFERENCES "events" ("id")
+)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE  INDEX "index_attendances_on_attendee_id" ON "attendances" ("attendee_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE  INDEX "index_attendances_on_attended_event_id" ON "attendances" ("attended_event_id")[0m
+  [1m[36mprimary::SchemaMigration Create (0.1ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES (?)[0m  [["version", "20191206183504"]]
+  [1m[35m (4.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? LIMIT ?[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.2ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["key", "environment"], ["value", "development"], ["created_at", "2020-01-20 04:15:23.728974"], ["updated_at", "2020-01-20 04:15:23.728974"]]
+  [1m[35m (3.0ms)[0m  [1m[36mcommit transaction[0m
+  [1m[35m (0.0ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Started GET "/" for ::1 at 2020-01-19 22:16:31 -0600
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by EventsController#index as HTML
+  Rendering events/index.html.erb within layouts/application
+  [1m[36mEvent Load (0.1ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date > '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 1.3ms | Allocations: 913)
+  Rendered shared/_upcoming.html.erb (Duration: 1.7ms | Allocations: 1248)
+  [1m[36mEvent Load (0.1ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date < '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 0.9ms | Allocations: 639)
+  Rendered shared/_previous.html.erb (Duration: 1.2ms | Allocations: 837)
+  Rendered events/index.html.erb within layouts/application (Duration: 4.2ms | Allocations: 2927)
+[Webpacker] Compiling...
+[Webpacker] Compiled all packs in /home/majo/Documents/Microverse/RoR/event-app/public/packs
+[Webpacker] Hash: aff7e98c4c4543260d42
+Version: webpack 4.41.2
+Time: 1191ms
+Built at: 01/19/2020 10:16:35 PM
+                                     Asset       Size       Chunks                         Chunk Names
+    js/application-616c1e3767338d2bbb73.js    124 KiB  application  [emitted] [immutable]  application
+js/application-616c1e3767338d2bbb73.js.map    139 KiB  application  [emitted] [dev]        application
+                             manifest.json  364 bytes               [emitted]              
+Entrypoint application = js/application-616c1e3767338d2bbb73.js js/application-616c1e3767338d2bbb73.js.map
+[./app/javascript/channels sync recursive _channel\.js$] ./app/javascript/channels sync _channel\.js$ 160 bytes {application} [built]
+[./app/javascript/channels/index.js] 211 bytes {application} [built]
+[./app/javascript/packs/application.js] 810 bytes {application} [built]
+[./node_modules/webpack/buildin/module.js] (webpack)/buildin/module.js 552 bytes {application} [built]
+    + 3 hidden modules
+
+  [1m[36mUser Load (0.6ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 8.5ms | Allocations: 3738)
+Completed 200 OK in 4289ms (Views: 4276.7ms | ActiveRecord: 1.3ms | Allocations: 113854)
+
+
+Started GET "/events" for ::1 at 2020-01-19 22:16:41 -0600
+Processing by EventsController#index as HTML
+  Rendering events/index.html.erb within layouts/application
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date > '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 1.8ms | Allocations: 651)
+  Rendered shared/_upcoming.html.erb (Duration: 2.1ms | Allocations: 729)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date < '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 2.3ms | Allocations: 639)
+  Rendered shared/_previous.html.erb (Duration: 2.5ms | Allocations: 716)
+  Rendered events/index.html.erb within layouts/application (Duration: 5.1ms | Allocations: 1588)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.9ms | Allocations: 791)
+Completed 200 OK in 23ms (Views: 20.0ms | ActiveRecord: 0.7ms | Allocations: 9595)
+
+
+Started GET "/login" for ::1 at 2020-01-19 22:16:43 -0600
+Processing by SessionsController#new as HTML
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (Duration: 5.8ms | Allocations: 754)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.7ms | Allocations: 786)
+Completed 200 OK in 23ms (Views: 21.4ms | ActiveRecord: 0.1ms | Allocations: 9191)
+
+
+Started POST "/login" for ::1 at 2020-01-19 22:16:47 -0600
+Processing by SessionsController#create as HTML
+  Parameters: {"authenticity_token"=>"z/clK8KOInFDHTY0Cu4TuO5Wy7ZJVEskq4zQ4Nld6J1vvgEKCueKkpjxWaK6Jq/ZmdE6nfzLDtJ+5zQxh9Av3w==", "session"=>{"name"=>"User Example"}, "commit"=>"Log In"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "User Example"], ["LIMIT", 1]]
+  ↳ app/controllers/sessions_controller.rb:7:in `create'
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (Duration: 1.1ms | Allocations: 244)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 2.5ms | Allocations: 765)
+Completed 200 OK in 29ms (Views: 23.4ms | ActiveRecord: 0.5ms | Allocations: 8751)
+
+
+Started GET "/users/new" for ::1 at 2020-01-19 22:16:50 -0600
+Processing by UsersController#new as HTML
+  Rendering users/new.html.erb within layouts/application
+  Rendered shared/_errors.html.erb (Duration: 0.4ms | Allocations: 199)
+  Rendered users/new.html.erb within layouts/application (Duration: 3.5ms | Allocations: 1018)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.8ms | Allocations: 774)
+Completed 200 OK in 38ms (Views: 19.8ms | ActiveRecord: 0.8ms | Allocations: 13058)
+
+
+Started POST "/users" for ::1 at 2020-01-19 22:16:55 -0600
+Processing by UsersController#create as HTML
+  Parameters: {"authenticity_token"=>"2q3YypUKh3fcRpT71mfY/EJtmXIRlu2K2NxKHlngv3vNMa52hjyKiGrzt/KloBNvz3lTGwza7AtysV5EkSwiUw==", "user"=>{"name"=>"Maria Jose Reyes Parroquin", "email"=>"maria_reyes@me.com"}, "commit"=>"Submit"}
+  [1m[35m (0.2ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/users_controller.rb:10:in `create'
+  [1m[36mUser Create (0.5ms)[0m  [1m[32mINSERT INTO "users" ("name", "email", "created_at", "updated_at") VALUES (?, ?, ?, ?)[0m  [["name", "Maria Jose Reyes Parroquin"], ["email", "maria_reyes@me.com"], ["created_at", "2020-01-20 04:16:55.797300"], ["updated_at", "2020-01-20 04:16:55.797300"]]
+  ↳ app/controllers/users_controller.rb:10:in `create'
+  [1m[35m (3.0ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/users_controller.rb:10:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+Redirected to http://localhost:8000/users/1
+Completed 302 Found in 44ms (ActiveRecord: 3.9ms | Allocations: 5019)
+
+
+Started GET "/users/1" for ::1 at 2020-01-19 22:16:55 -0600
+Processing by UsersController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:21:in `show'
+  Rendering users/show.html.erb within layouts/application
+  Rendered shared/_user.html.erb (Duration: 0.7ms | Allocations: 119)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."creator_id" = ?[0m  [["creator_id", 1]]
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 2.5ms | Allocations: 1488)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" INNER JOIN "attendances" ON "events"."id" = "attendances"."attended_event_id" WHERE "attendances"."attendee_id" = ? AND (events.date > '2020-01-20 04:16:55.879736')[0m  [["attendee_id", 1]]
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 5.2ms | Allocations: 1902)
+  Rendered shared/_upcoming.html.erb (Duration: 5.5ms | Allocations: 1980)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" INNER JOIN "attendances" ON "events"."id" = "attendances"."attended_event_id" WHERE "attendances"."attendee_id" = ? AND (events.date < '2020-01-20 04:16:55.888646')[0m  [["attendee_id", 1]]
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 1.5ms | Allocations: 672)
+  Rendered shared/_previous.html.erb (Duration: 1.8ms | Allocations: 749)
+  Rendered users/show.html.erb within layouts/application (Duration: 12.4ms | Allocations: 4985)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.8ms | Allocations: 726)
+Completed 200 OK in 68ms (Views: 24.7ms | ActiveRecord: 2.2ms | Allocations: 24192)
+
+
+Started GET "/events/new" for ::1 at 2020-01-19 22:17:00 -0600
+Processing by EventsController#new as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/new.html.erb within layouts/application
+  Rendered shared/_errors.html.erb (Duration: 0.1ms | Allocations: 15)
+  Rendered events/new.html.erb within layouts/application (Duration: 7.8ms | Allocations: 1397)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.3ms | Allocations: 133)
+Completed 200 OK in 30ms (Views: 16.0ms | ActiveRecord: 0.2ms | Allocations: 13714)
+
+
+Started POST "/events" for ::1 at 2020-01-19 22:17:31 -0600
+Processing by EventsController#create as HTML
+  Parameters: {"authenticity_token"=>"047wy1MN0BNKbErB3V2QYS6ex6RaY8Ykmh/iWrfSk9aIftY9AoY6clCUnsVDAMpL4CnIQ/SUZQ1KB2FCDPaaEg==", "event"=>{"name"=>"New event", "description"=>"Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book.", "date"=>"2020-05-15", "location"=>"The south of France"}, "commit"=>"Create my event"}
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."remember_token" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:11:in `create'
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mEvent Create (0.3ms)[0m  [1m[32mINSERT INTO "events" ("name", "description", "date", "location", "created_at", "updated_at", "creator_id") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["name", "New event"], ["description", "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book."], ["date", "2020-05-15 00:00:00"], ["location", "The south of France"], ["created_at", "2020-01-20 04:17:31.463799"], ["updated_at", "2020-01-20 04:17:31.463799"], ["creator_id", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[35m (4.7ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+Redirected to http://localhost:8000/events/1
+Completed 302 Found in 28ms (ActiveRecord: 5.5ms | Allocations: 8248)
+
+
+Started GET "/events/1" for ::1 at 2020-01-19 22:17:31 -0600
+Processing by EventsController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mEvent Load (0.2ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:22:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:23:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/show.html.erb within layouts/application
+  Rendered shared/_user.html.erb (Duration: 0.0ms | Allocations: 10)
+  [1m[36mUser Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ? AND "users"."id" = ? LIMIT ?[0m  [["attended_event_id", 1], ["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/show.html.erb:4
+  [1m[36mCACHE Event Load (0.0ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/helpers/events_helper.rb:5:in `current_event'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ?[0m  [["attended_event_id", 1]]
+  ↳ app/views/shared/_attendees.html.erb:3
+  Rendered shared/_attendees.html.erb (Duration: 2.1ms | Allocations: 1374)
+  Rendered events/show.html.erb within layouts/application (Duration: 5.1ms | Allocations: 3405)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.2ms | Allocations: 137)
+Completed 200 OK in 21ms (Views: 10.9ms | ActiveRecord: 0.7ms | Allocations: 12546)
+
+
+Started GET "/users/1" for ::1 at 2020-01-19 22:17:35 -0600
+Processing by UsersController#show as HTML
+  Parameters: {"id"=>"1"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/users_controller.rb:21:in `show'
+  Rendering users/show.html.erb within layouts/application
+  Rendered shared/_user.html.erb (Duration: 0.1ms | Allocations: 10)
+  [1m[36mEvent Load (0.1ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."creator_id" = ?[0m  [["creator_id", 1]]
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 12.2ms | Allocations: 4528)
+  [1m[36mEvent Load (0.2ms)[0m  [1m[34mSELECT "events".* FROM "events" INNER JOIN "attendances" ON "events"."id" = "attendances"."attended_event_id" WHERE "attendances"."attendee_id" = ? AND (events.date > '2020-01-20 04:17:35.988464')[0m  [["attendee_id", 1]]
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 1.3ms | Allocations: 672)
+  Rendered shared/_upcoming.html.erb (Duration: 1.5ms | Allocations: 750)
+  [1m[36mEvent Load (0.2ms)[0m  [1m[34mSELECT "events".* FROM "events" INNER JOIN "attendances" ON "events"."id" = "attendances"."attended_event_id" WHERE "attendances"."attendee_id" = ? AND (events.date < '2020-01-20 04:17:35.989127')[0m  [["attendee_id", 1]]
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 1.0ms | Allocations: 672)
+  Rendered shared/_previous.html.erb (Duration: 1.2ms | Allocations: 749)
+  Rendered users/show.html.erb within layouts/application (Duration: 15.6ms | Allocations: 6338)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.1ms | Allocations: 698)
+Completed 200 OK in 27ms (Views: 23.0ms | ActiveRecord: 0.9ms | Allocations: 15009)
+
+
+Started GET "/events" for ::1 at 2020-01-19 22:17:37 -0600
+Processing by EventsController#index as HTML
+  Rendering events/index.html.erb within layouts/application
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date > '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 7.6ms | Allocations: 1523)
+  Rendered shared/_upcoming.html.erb (Duration: 7.9ms | Allocations: 1601)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date < '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 2.0ms | Allocations: 639)
+  Rendered shared/_previous.html.erb (Duration: 2.2ms | Allocations: 716)
+  Rendered events/index.html.erb within layouts/application (Duration: 10.6ms | Allocations: 2459)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.4ms | Allocations: 691)
+Completed 200 OK in 25ms (Views: 21.6ms | ActiveRecord: 1.1ms | Allocations: 10342)
+
+
+Started GET "/events/new" for ::1 at 2020-01-19 22:17:41 -0600
+Processing by EventsController#new as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/new.html.erb within layouts/application
+  Rendered shared/_errors.html.erb (Duration: 0.1ms | Allocations: 15)
+  Rendered events/new.html.erb within layouts/application (Duration: 1.5ms | Allocations: 497)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.5ms | Allocations: 126)
+Completed 200 OK in 22ms (Views: 19.2ms | ActiveRecord: 0.2ms | Allocations: 8224)
+
+
+Started GET "/events" for ::1 at 2020-01-19 22:17:43 -0600
+Processing by EventsController#index as HTML
+  Rendering events/index.html.erb within layouts/application
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date > '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 8.5ms | Allocations: 1522)
+  Rendered shared/_upcoming.html.erb (Duration: 8.8ms | Allocations: 1600)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date < '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  Rendered events/_events.html.erb (Duration: 12.7ms | Allocations: 639)
+  Rendered shared/_previous.html.erb (Duration: 13.0ms | Allocations: 716)
+  Rendered events/index.html.erb within layouts/application (Duration: 22.3ms | Allocations: 2458)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.9ms | Allocations: 693)
+Completed 200 OK in 38ms (Views: 34.9ms | ActiveRecord: 1.0ms | Allocations: 10350)
+
+
+Started GET "/events/new" for ::1 at 2020-01-19 22:29:13 -0600
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT sqlite_version(*)[0m
+Processing by EventsController#new as HTML
+  [1m[36mUser Load (0.3ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/new.html.erb within layouts/application
+  Rendered shared/_errors.html.erb (Duration: 0.1ms | Allocations: 15)
+  Rendered events/new.html.erb within layouts/application (Duration: 1.5ms | Allocations: 494)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.3ms | Allocations: 126)
+Completed 200 OK in 18ms (Views: 15.0ms | ActiveRecord: 0.3ms | Allocations: 8218)
+
+
+Started POST "/events" for ::1 at 2020-01-19 22:29:52 -0600
+Processing by EventsController#create as HTML
+  Parameters: {"authenticity_token"=>"ROxPZWZgMSQggH/hpO7nbR3yHsEkJ/MiaALr/tIXPpgfHGmTN+vbRTp4q+U6s71H00URJorQUAu4GmjmaTM3XA==", "event"=>{"name"=>"Future events", "description"=>"ebase (check it out!) is an online database that can be set up relatively easily, allowing you to save your data to a server in the cloud! Teaching you how to use it is beyond the scope of this tutorial, but it is almost definitely within your skill set. If you’re interested, check out this video to see what it’s all about.", "date"=>"2010-05-06", "location"=>"Madrid"}, "commit"=>"Create my event"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."remember_token" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:11:in `create'
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mEvent Create (0.3ms)[0m  [1m[32mINSERT INTO "events" ("name", "description", "date", "location", "created_at", "updated_at", "creator_id") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Future events"], ["description", "ebase (check it out!) is an online database that can be set up relatively easily, allowing you to save your data to a server in the cloud! Teaching you how to use it is beyond the scope of this tutorial, but it is almost definitely within your skill set. If you’re interested, check out this video to see what it’s all about."], ["date", "2010-05-06 00:00:00"], ["location", "Madrid"], ["created_at", "2020-01-20 04:29:52.014790"], ["updated_at", "2020-01-20 04:29:52.014790"], ["creator_id", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[35m (3.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+Redirected to http://localhost:8000/events/2
+Completed 302 Found in 12ms (ActiveRecord: 3.7ms | Allocations: 5902)
+
+
+Started GET "/events/2" for ::1 at 2020-01-19 22:29:52 -0600
+Processing by EventsController#show as HTML
+  Parameters: {"id"=>"2"}
+  [1m[36mEvent Load (0.2ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:22:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:23:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/show.html.erb within layouts/application
+  Rendered shared/_user.html.erb (Duration: 0.0ms | Allocations: 10)
+  [1m[36mUser Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ? AND "users"."id" = ? LIMIT ?[0m  [["attended_event_id", 2], ["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/show.html.erb:4
+  [1m[36mCACHE Event Load (0.0ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 2], ["LIMIT", 1]]
+  ↳ app/helpers/events_helper.rb:5:in `current_event'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ?[0m  [["attended_event_id", 2]]
+  ↳ app/views/shared/_attendees.html.erb:3
+  Rendered shared/_attendees.html.erb (Duration: 1.0ms | Allocations: 912)
+  Rendered events/show.html.erb within layouts/application (Duration: 3.3ms | Allocations: 2557)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.2ms | Allocations: 125)
+Completed 200 OK in 12ms (Views: 8.7ms | ActiveRecord: 0.7ms | Allocations: 11467)
+
+
+Started GET "/events" for ::1 at 2020-01-19 22:29:55 -0600
+Processing by EventsController#index as HTML
+  Rendering events/index.html.erb within layouts/application
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date > '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 4.7ms | Allocations: 1534)
+  Rendered shared/_upcoming.html.erb (Duration: 4.9ms | Allocations: 1612)
+  [1m[36mEvent Load (3.5ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date < '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 8.1ms | Allocations: 1436)
+  Rendered shared/_previous.html.erb (Duration: 8.4ms | Allocations: 1513)
+  Rendered events/index.html.erb within layouts/application (Duration: 13.7ms | Allocations: 3267)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 2.1ms | Allocations: 693)
+Completed 200 OK in 43ms (Views: 37.2ms | ActiveRecord: 4.3ms | Allocations: 11153)
+
+
+Started GET "/events/new" for ::1 at 2020-01-19 22:29:57 -0600
+Processing by EventsController#new as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/new.html.erb within layouts/application
+  Rendered shared/_errors.html.erb (Duration: 0.1ms | Allocations: 15)
+  Rendered events/new.html.erb within layouts/application (Duration: 1.6ms | Allocations: 494)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.4ms | Allocations: 126)
+Completed 200 OK in 18ms (Views: 15.4ms | ActiveRecord: 0.2ms | Allocations: 8210)
+
+
+Started POST "/events" for ::1 at 2020-01-19 22:30:14 -0600
+Processing by EventsController#create as HTML
+  Parameters: {"authenticity_token"=>"1kJ0ebP/CShuhgWyqzn4e/RAtnBY4XE/0CqKFSZTrbqNslKP4nTjSXR+0bY1ZKJROve5l/YW0hYAMgkNnXekfg==", "event"=>{"name"=>"Past event", "description"=>"ebase (check it out!) is an online database that can be set up relatively easily, allowing you to save your data to a server in the cloud! Teaching you how to use it is beyond the scope of this tutorial, but it is almost definitely within your skill set. If you’re interested, check out this video to see what it’s all about.", "date"=>"2019-10-12", "location"=>"Long, Island"}, "commit"=>"Create my event"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."remember_token" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:11:in `create'
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mUser Load (1.4ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mEvent Create (0.3ms)[0m  [1m[32mINSERT INTO "events" ("name", "description", "date", "location", "created_at", "updated_at", "creator_id") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Past event"], ["description", "ebase (check it out!) is an online database that can be set up relatively easily, allowing you to save your data to a server in the cloud! Teaching you how to use it is beyond the scope of this tutorial, but it is almost definitely within your skill set. If you’re interested, check out this video to see what it’s all about."], ["date", "2019-10-12 00:00:00"], ["location", "Long, Island"], ["created_at", "2020-01-20 04:30:14.892509"], ["updated_at", "2020-01-20 04:30:14.892509"], ["creator_id", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[35m (4.5ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+Redirected to http://localhost:8000/events/3
+Completed 302 Found in 19ms (ActiveRecord: 6.5ms | Allocations: 5880)
+
+
+Started GET "/events/3" for ::1 at 2020-01-19 22:30:14 -0600
+Processing by EventsController#show as HTML
+  Parameters: {"id"=>"3"}
+  [1m[36mEvent Load (0.1ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:22:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:23:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/show.html.erb within layouts/application
+  Rendered shared/_user.html.erb (Duration: 0.0ms | Allocations: 10)
+  [1m[36mUser Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ? AND "users"."id" = ? LIMIT ?[0m  [["attended_event_id", 3], ["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/show.html.erb:4
+  [1m[36mCACHE Event Load (0.0ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 3], ["LIMIT", 1]]
+  ↳ app/helpers/events_helper.rb:5:in `current_event'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ?[0m  [["attended_event_id", 3]]
+  ↳ app/views/shared/_attendees.html.erb:3
+  Rendered shared/_attendees.html.erb (Duration: 1.2ms | Allocations: 895)
+  Rendered events/show.html.erb within layouts/application (Duration: 3.6ms | Allocations: 2538)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.2ms | Allocations: 125)
+Completed 200 OK in 13ms (Views: 10.0ms | ActiveRecord: 0.5ms | Allocations: 11405)
+
+
+Started GET "/events" for ::1 at 2020-01-19 22:30:17 -0600
+Processing by EventsController#index as HTML
+  Rendering events/index.html.erb within layouts/application
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date > '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 4.3ms | Allocations: 1530)
+  Rendered shared/_upcoming.html.erb (Duration: 6.3ms | Allocations: 1608)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date < '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 4.9ms | Allocations: 2233)
+  Rendered shared/_previous.html.erb (Duration: 5.2ms | Allocations: 2310)
+  Rendered events/index.html.erb within layouts/application (Duration: 11.9ms | Allocations: 4060)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.1ms | Allocations: 691)
+Completed 200 OK in 22ms (Views: 19.7ms | ActiveRecord: 0.9ms | Allocations: 11943)
+
+
+Started GET "/events/new" for ::1 at 2020-01-19 22:30:18 -0600
+Processing by EventsController#new as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/new.html.erb within layouts/application
+  Rendered shared/_errors.html.erb (Duration: 0.1ms | Allocations: 15)
+  Rendered events/new.html.erb within layouts/application (Duration: 1.3ms | Allocations: 494)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.2ms | Allocations: 126)
+Completed 200 OK in 28ms (Views: 26.0ms | ActiveRecord: 0.2ms | Allocations: 8211)
+
+
+Started POST "/events" for ::1 at 2020-01-19 22:30:41 -0600
+Processing by EventsController#create as HTML
+  Parameters: {"authenticity_token"=>"cz4gaGN8+ka1DfUE+W8DTB33ps7x74hl2IFKDCsn9bUozgaeMvcQJ6/1IQBnMllm00CpKV8YK0wImckUkAP8cQ==", "event"=>{"name"=>"Nomad travel", "description"=>"ebase (check it out!) is an online database that can be set up relatively easily, allowing you to save your data to a server in the cloud! Teaching you how to use it is beyond the scope of this tutorial, but it is almost definitely within your skill set. If you’re interested, check out this video to see what it’s all about.", "date"=>"2020-10-01", "location"=>"Melbourne"}, "commit"=>"Create my event"}
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."remember_token" IS NULL LIMIT ?[0m  [["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:11:in `create'
+  [1m[35m (0.1ms)[0m  [1m[36mbegin transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[36mEvent Create (0.3ms)[0m  [1m[32mINSERT INTO "events" ("name", "description", "date", "location", "created_at", "updated_at", "creator_id") VALUES (?, ?, ?, ?, ?, ?, ?)[0m  [["name", "Nomad travel"], ["description", "ebase (check it out!) is an online database that can be set up relatively easily, allowing you to save your data to a server in the cloud! Teaching you how to use it is beyond the scope of this tutorial, but it is almost definitely within your skill set. If you’re interested, check out this video to see what it’s all about."], ["date", "2020-10-01 00:00:00"], ["location", "Melbourne"], ["created_at", "2020-01-20 04:30:41.094010"], ["updated_at", "2020-01-20 04:30:41.094010"], ["creator_id", 1]]
+  ↳ app/controllers/events_controller.rb:13:in `create'
+  [1m[35m (3.1ms)[0m  [1m[36mcommit transaction[0m
+  ↳ app/controllers/events_controller.rb:13:in `create'
+Redirected to http://localhost:8000/events/4
+Completed 302 Found in 17ms (ActiveRecord: 3.9ms | Allocations: 5872)
+
+
+Started GET "/events/4" for ::1 at 2020-01-19 22:30:41 -0600
+Processing by EventsController#show as HTML
+  Parameters: {"id"=>"4"}
+  [1m[36mEvent Load (0.1ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:22:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/controllers/events_controller.rb:23:in `show'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/show.html.erb within layouts/application
+  Rendered shared/_user.html.erb (Duration: 0.0ms | Allocations: 10)
+  [1m[36mUser Exists? (0.1ms)[0m  [1m[34mSELECT 1 AS one FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ? AND "users"."id" = ? LIMIT ?[0m  [["attended_event_id", 4], ["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/show.html.erb:4
+  [1m[36mCACHE Event Load (0.0ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE "events"."id" = ? LIMIT ?[0m  [["id", 4], ["LIMIT", 1]]
+  ↳ app/helpers/events_helper.rb:5:in `current_event'
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" INNER JOIN "attendances" ON "users"."id" = "attendances"."attendee_id" WHERE "attendances"."attended_event_id" = ?[0m  [["attended_event_id", 4]]
+  ↳ app/views/shared/_attendees.html.erb:3
+  Rendered shared/_attendees.html.erb (Duration: 0.9ms | Allocations: 895)
+  Rendered events/show.html.erb within layouts/application (Duration: 3.0ms | Allocations: 2537)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.3ms | Allocations: 125)
+Completed 200 OK in 11ms (Views: 8.2ms | ActiveRecord: 0.5ms | Allocations: 11418)
+
+
+Started GET "/events/new" for ::1 at 2020-01-19 22:30:43 -0600
+Processing by EventsController#new as HTML
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendering events/new.html.erb within layouts/application
+  Rendered shared/_errors.html.erb (Duration: 0.1ms | Allocations: 15)
+  Rendered events/new.html.erb within layouts/application (Duration: 1.3ms | Allocations: 494)
+[Webpacker] Everything's up-to-date. Nothing to do
+  Rendered layouts/_header.html.erb (Duration: 0.4ms | Allocations: 126)
+Completed 200 OK in 20ms (Views: 17.4ms | ActiveRecord: 0.2ms | Allocations: 8195)
+
+
+Started GET "/events" for ::1 at 2020-01-19 22:30:45 -0600
+Processing by EventsController#index as HTML
+  Rendering events/index.html.erb within layouts/application
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date > '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mUser Load (0.2ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 7.1ms | Allocations: 2327)
+  Rendered shared/_upcoming.html.erb (Duration: 13.9ms | Allocations: 2436)
+  [1m[36mEvent Load (0.3ms)[0m  [1m[34mSELECT "events".* FROM "events" WHERE (date < '2020-01-19') ORDER BY "events"."date" ASC[0m
+  ↳ app/views/events/_events.html.erb:1
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  [1m[36mCACHE User Load (0.0ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."id" = ? LIMIT ?[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/views/events/_events.html.erb:9
+  Rendered events/_events.html.erb (Duration: 6.3ms | Allocations: 2282)
+  Rendered shared/_previous.html.erb (Duration: 6.6ms | Allocations: 2359)
+  Rendered events/index.html.erb within layouts/application (Duration: 21.9ms | Allocations: 5522)
+[Webpacker] Everything's up-to-date. Nothing to do
+  [1m[36mUser Load (0.1ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."name" = ? LIMIT ?[0m  [["name", "Maria Jose Reyes Parroquin"], ["LIMIT", 1]]
+  ↳ app/helpers/sessions_helper.rb:25:in `current_user'
+  Rendered layouts/_header.html.erb (Duration: 1.2ms | Allocations: 691)
+Completed 200 OK in 33ms (Views: 30.1ms | ActiveRecord: 1.1ms | Allocations: 13409)
+
+
